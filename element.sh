@@ -38,8 +38,6 @@ case $TYPE_ID in
     3) TYPE='metalloid' ;;
   esac  
 
-  #echo "The element with atomic number 1 is Hydrogen (H). It's a nonmetal, with a mass of 1.008 amu.
-  # Hydrogen has a melting point of -259.1 celsius and a boiling point of -252.9 celsius."
   echo "The element with atomic number $ATOMIC_NUMBER is $NAME ($1). It's a $TYPE, with a mass of $ATOMIC_MASS amu. $NAME has a melting point of $MELTING_POINT celsius and a boiling point of $BOILING_POINT celsius."
 
 # ELSE CHECK IF $1 EXIST IN A NAME COLUMN
