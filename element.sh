@@ -32,7 +32,7 @@ fi
     echo "It's an atomic number"
 # It doesn't exist in our database
   else 
-  echo "I could not find that element in the database"
+  echo "I could not find that element in the database."
   fi
 
 
