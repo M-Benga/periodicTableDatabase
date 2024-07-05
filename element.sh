@@ -16,21 +16,43 @@ ITSASYMBOL=$($PSQL "SELECT symbol FROM elements WHERE symbol = '$1'")
 ITSANAME=$($PSQL "SELECT name FROM elements WHERE name = '$1'")
 fi
 
-# Check if$1 exist in a symbol column
+# CHECK IF $1 EXIST IN A SYMBOL COLUMN
  if [[ $ITSASYMBOL = $1 ]]
   then 
-  echo "It's a symbol"
- 
-# Else check if $1 exist in a names column 
+ # Get atomic number
+ ATOMIC_NUMBER=$($PSQL "SELECT atomic_number FROM elements WHERE symbol = '$1' ")
+ # Get name
+ NAME=$($PSQL "SELECT name FROM elements WHERE symbol = '$1'")
+ # Get atomic mass
+ ATOMIC_MASS=$($PSQL "SELECT atomic_mass FROM properties WHERE atomic_number = $ATOMIC_NUMBER")
+ # Get melting point
+ MELTING_POINT=$($PSQL "SELECT melting_point_celsius FROM properties WHERE atomic_number = $ATOMIC_NUMBER ")
+ # Get boiling point
+ BOILING_POINT=$($PSQL "SELECT boiling_point_celsius FROM properties WHERE atomic_number = $ATOMIC_NUMBER ")
+ # Get type_id
+ TYPE_ID=$($PSQL "SELECT type_id FROM properties WHERE atomic_number = $ATOMIC_NUMBER ")
+# Get the type
+case $TYPE_ID in
+    1) TYPE='metal' ;;
+    2) TYPE='nonmetal' ;;
+    3) TYPE='metalloid' ;;
+  esac  
+
+  #echo "The element with atomic number 1 is Hydrogen (H). It's a nonmetal, with a mass of 1.008 amu.
+  # Hydrogen has a melting point of -259.1 celsius and a boiling point of -252.9 celsius."
+  echo "The element with atomic number $ATOMIC_NUMBER is $NAME ($1). It's a $TYPE, with a mass of $ATOMIC_MASS amu. $NAME has a melting point of $MELTING_POINT celsius and a boiling point of $BOILING_POINT celsius."
+
+# ELSE CHECK IF $1 EXIST IN A NAME COLUMN
   elif [[ $ITSANAME = $1 ]]
   then
    echo "It's a name"
 
-# Check if$1 exist in an atomic numbers column
+# ELSE CHECK IF $1 EXIST IN ATOMIC NUMBER COLUMN
    elif [[ $ITSANATOMICNUMBER = $1 ]]
     then 
     echo "It's an atomic number"
-# It doesn't exist in our database
+
+# IT DOESN'T EXIST IN OUT DATABASE
   else 
   echo "I could not find that element in the database."
   fi
