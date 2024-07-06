@@ -43,12 +43,53 @@ case $TYPE_ID in
 # ELSE CHECK IF $1 EXIST IN A NAME COLUMN
   elif [[ $ITSANAME = $1 ]]
   then
-   echo "It's a name"
+# Get atomic number
+ ATOMIC_NUMBER=$($PSQL "SELECT atomic_number FROM elements WHERE name = '$1' ")
+# Get symbol
+SYMBOL=$($PSQL "SELECT symbol FROM elements WHERE atomic_number = $ATOMIC_NUMBER ")
+# Get atomic mass
+ ATOMIC_MASS=$($PSQL "SELECT atomic_mass FROM properties WHERE atomic_number = $ATOMIC_NUMBER")
+ # Get melting point
+ MELTING_POINT=$($PSQL "SELECT melting_point_celsius FROM properties WHERE atomic_number = $ATOMIC_NUMBER ")
+ # Get boiling point
+ BOILING_POINT=$($PSQL "SELECT boiling_point_celsius FROM properties WHERE atomic_number = $ATOMIC_NUMBER ")
+ # Get type_id
+ TYPE_ID=$($PSQL "SELECT type_id FROM properties WHERE atomic_number = $ATOMIC_NUMBER ")
+# Get the type
+case $TYPE_ID in
+    1) TYPE='metal' ;;
+    2) TYPE='nonmetal' ;;
+    3) TYPE='metalloid' ;;
+  esac  
+
+# The output
+echo "The element with atomic number $ATOMIC_NUMBER is $1 ($SYMBOL). It's a $TYPE, with a mass of $ATOMIC_MASS amu. $1 has a melting point of $MELTING_POINT celsius and a boiling point of $BOILING_POINT celsius."
+
 
 # ELSE CHECK IF $1 EXIST IN ATOMIC NUMBER COLUMN
    elif [[ $ITSANATOMICNUMBER = $1 ]]
     then 
-    echo "It's an atomic number"
+# Get name
+ NAME=$($PSQL "SELECT name FROM elements WHERE atomic_number = $1 ")
+# Get symbol
+SYMBOL=$($PSQL "SELECT symbol FROM elements WHERE atomic_number = $1 ")
+# Get atomic mass
+ATOMIC_MASS=$($PSQL "SELECT atomic_mass FROM properties WHERE atomic_number = $1")
+# Get melting point
+MELTING_POINT=$($PSQL "SELECT melting_point_celsius FROM properties WHERE atomic_number = $1 ")
+# Get boiling point
+BOILING_POINT=$($PSQL "SELECT boiling_point_celsius FROM properties WHERE atomic_number = $1 ")
+# Get type_id
+TYPE_ID=$($PSQL "SELECT type_id FROM properties WHERE atomic_number = $1 ")
+# Get the type
+case $TYPE_ID in
+    1) TYPE='metal' ;;
+    2) TYPE='nonmetal' ;;
+    3) TYPE='metalloid' ;;
+  esac  
+
+  echo "The element with atomic number $1 is $NAME ($SYMBOL). It's a $TYPE, with a mass of $ATOMIC_MASS amu. $NAME has a melting point of $MELTING_POINT celsius and a boiling point of $BOILING_POINT celsius."    
+  
 
 # IT DOESN'T EXIST IN OUT DATABASE
   else 
